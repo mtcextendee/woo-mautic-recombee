@@ -176,7 +176,7 @@ function mautic_recombee_update_api($component, $options = []) {
     try {
         $result = api_mautic()->makeRequest('recombee/'.$component, $options, 'POST');
     } catch (Exception $exception) {
-        echo $exception->getMessage();
+        // $exception->getMessage();
     }
 }
 
