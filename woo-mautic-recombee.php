@@ -92,13 +92,11 @@ function mautic_woocommerce_tab_settings() {
 function api_mautic() {
 
 	$settings = array(
-		'userName'         => get_option( 'mautic_woocommerce_settings_username' ),
-		'password'      => get_option( 'mautic_woocommerce_settings_password' ),
+		'userName'         => get_option( 'mautic_woocommerce_settings_mautic_username' ),
+		'password'      => get_option( 'mautic_woocommerce_settings_mautic_password' ),
 	);
 
-
-// Initiate the auth object specifying to use BasicAuth
-	$initAuth = new ApdiAuth();
+	$initAuth = new ApiAuth();
 	$api = new \Mautic\MauticApi();
 	$auth = $initAuth->newAuth($settings, 'BasicAuth');
 	return $api->newApi('api', $auth, get_option( 'mautic_woocommerce_settings_server'));;
@@ -133,8 +131,8 @@ add_action( 'woocommerce_add_to_cart',  'action_woocommerce_add_to_cart', 10, 6)
 function action_woocommerce_remove_cart_item( $cart_item_key,  WC_Cart $cart) {
 
 	$item = $cart->get_cart_item($cart_item_key);
-	$options = ['itemId' => $item['product_id'], 'amount'=>$item['quantity'], 'price'=>$item['line_total']];
-	mautic_recombee_update_api('AddCartAddition', $options);
+	$options = ['itemId' => $item['product_id']];
+	mautic_recombee_update_api('DeleteCartAddition', $options);
 };
 
 add_action( 'woocommerce_remove_cart_item',  'action_woocommerce_remove_cart_item', 10, 6);
@@ -154,7 +152,7 @@ function action_woocommerce_thankyou( $order_id ) {
 	// iterating through each order items (getting product ID and the product object)
 	// (work for simple and variable products)
 	foreach ( $order->get_items() as $item_id=>$item ) {
-		$options = ['itemId' => $item_id, 'amount'=>$item->get_quantity(), 'price'=>$order->get_item_total( $item )];
+		$options = ['itemId' => $item['product_id'], 'amount'=>$item->get_quantity(), 'price'=>$order->get_item_total( $item )];
 		mautic_recombee_update_api('AddPurchase', $options);
 	}
 }
@@ -167,6 +165,7 @@ add_action('woocommerce_thankyou', 'action_woocommerce_thankyou', 10, 1);
  * @param array $options
  */
 function mautic_recombee_update_api($component, $options = []) {
+	$options['userId'] = 1;
 	if(!isset($options['userId']) && !isset($_COOKIE['mtc_id']))
 	{
 		return;
