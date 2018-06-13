@@ -161,11 +161,22 @@ add_action('woocommerce_thankyou', 'action_woocommerce_thankyou', 10, 1);
 
 
 /**
+ * @param WC_Product $product
+ */
+function action_woocommerce_after_single_product($product) {
+    mautic_recombee_update_api('AddDetailView', ['itemId'=>$product->get_id()]);
+}
+
+add_action( 'woocommerce_product_additional_information', 'action_action_woocommerce_after_single_product', 5 );
+
+
+
+/**
  * @param       $component
  * @param array $options
  */
 function mautic_recombee_update_api($component, $options = []) {
-	$options['userId'] = 1;
+	//$options['userId'] = 1;
 	if(!isset($options['userId']) && !isset($_COOKIE['mtc_id']))
 	{
 		return;
