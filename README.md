@@ -3,6 +3,7 @@
 Recombee service integration ([https://www.recombee.com](https://www.recombee.com/)) to Mautic ([http://mautic.org](http://mautic.org/)) for WooCommerce
 Part of MTC extendee family plugins for Mautic ([https://mtcextendee.com](https://mtcextendee.com/))
 
+Plugin related to: https://github.com/kuzmany/mautic-recombee-bundle
 Product website: https://mtcrecombee.com/
 
 ## Installation
